@@ -2,12 +2,12 @@ import express from "express";
 import Joi from "joi";
 import bcrypt from "bcrypt";
 import _ from "lodash";
-import jwt from "jsonwebtoken";
 
 import { User } from "../models/users";
 
 const router = express.Router();
 
+/** POST - /api/auth/ */
 router.post("/", async (req, res) => {
     try {
         const { error } = validate(req.body);
@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
         const validPassword = await bcrypt.compare(req.body.password, user.hash);
         if (!validPassword) return res.status(400).send("Invalid email or password");
 
-        const token = jwt.sign({ _id: user._id }, 'secret'); 
+        const token = user.generateToken();
 
         res.send(token);
     } catch (err) {

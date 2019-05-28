@@ -1,4 +1,8 @@
 import express from "express";
+import Joi from "joi";
+
+import authorise from "../middleware/authorise";
+import admin from "../middleware/admin";
 
 const router = express.Router();
 
@@ -25,7 +29,8 @@ router.get("/", (req, res) => {
     res.send(courses);
 });
 
-router.post('/', (req, res) => {
+router.post('/', authorise, (req, res) => { 
+
     const result = validateCourse(req.body);
     if (result.error) { return res.status(400).send(result.error.details[0].message); }
 
@@ -39,7 +44,7 @@ router.post('/', (req, res) => {
 });
 
 
-router.put('/:id', (req, res) => {
+router.put('/:id', authorise, (req, res) => {
     const id = req.params.id   //  Params are pulled from req
     const selectedCourse = courses.find(course => course.id === parseInt(id));
     if(!selectedCourse) { return res.status(404).send("Course could not be found"); }
@@ -51,13 +56,15 @@ router.put('/:id', (req, res) => {
     res.send(selectedCourse);
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", [authorise, admin], (req, res) => {
+    console.log("entered route")
     const id = req.params.id   //  Params are pulled from req
     const selectedCourse = courses.find(course => course.id === parseInt(id));
     if(!selectedCourse) { return res.status(404).send("Course could not be found"); }
 
     const index = courses.indexOf(selectedCourse);
     courses.splice(index, 1);
+    res.send(selectedCourse);
 })
 
 

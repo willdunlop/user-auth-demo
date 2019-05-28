@@ -7,6 +7,11 @@ import debug from "debug";
 
 import routes from "./routes";
 
+if(config.get("JWT_PRIVATE_KEY") === undefined || !config.get("JWT_PRIVATE_KEY")){
+    console.error("\x1b[31mFatal Error:\x1b[37m The JWT_PRIVATE_KEY variabe was not defined");
+    process.exit(1);
+}
+
 const log = {
     info: debug("app:info"),
     db: debug("app:db"),
