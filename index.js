@@ -5,6 +5,8 @@ import morgan from "morgan";
 import config from "config";
 import debug from "debug";
 
+import errorHandler from "./middleware/error";
+
 import routes from "./routes";
 
 if(config.get("JWT_PRIVATE_KEY") === undefined || !config.get("JWT_PRIVATE_KEY")){
@@ -37,10 +39,9 @@ app.use(express.urlencoded({ extended: true }))             //  will parse urlen
 if (!isProd) app.use(morgan("tiny"));                       // Logs shit, disable when prod
 // app.use(express.static("public"));                       //  Serves the static folder called public   
 
-log.launch("AppName", config.get("name"));
-
-
 app.use("/api", routes);
+
+app.use(errorHandler);
 
 
 /** Dummy data becase fuck databses for now */
