@@ -13,6 +13,7 @@ const router = express.Router();
 
 /** GET - /api/courses/ */
 router.get("/", asyncMiddleware(async (req, res) => {
+    throw new Error("lol");
     const courses = await Course.find().sort("name");
     return res.send(courses);
 }));

@@ -4,15 +4,23 @@ import helmet from "helmet";
 import morgan from "morgan";
 import config from "config";
 import debug from "debug";
+import * as winston from "winston";
+import "winston-mongodb";
 
 import errorHandler from "./middleware/error";
 
 import routes from "./routes";
 
+console.log("transports", winston.transports)
+winston.add(winston.transports.File, { filename: "logfile.log" });
+winston.add(winston.transports.MongoDB, { db: "mongodb://localhost/MongoDemo" });
+
 if(config.get("JWT_PRIVATE_KEY") === undefined || !config.get("JWT_PRIVATE_KEY")){
     console.error("\x1b[31mFatal Error:\x1b[37m The JWT_PRIVATE_KEY variabe was not defined");
     process.exit(1);
 }
+
+
 
 const log = {
     info: debug("app:info"),
